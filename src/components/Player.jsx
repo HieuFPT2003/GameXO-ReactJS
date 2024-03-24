@@ -1,39 +1,50 @@
 import { useState } from 'react';
-export default function Player({ initialName, symbol }) {
+
+export default function Player({
+    initialName,
+    symbol,
+    isActive,
+    onChangeName,
+}) {
+    const [playerName, setPlayerName] = useState(initialName);
     const [isEditing, setIsEditing] = useState(false);
-    const [inputValue, setInputValue] = useState(initialName);
-    const handleEnditing = () => {
+
+    function handleEditClick() {
         setIsEditing((editing) => !editing);
-    };
 
-    const handleInputChange = (event) => {
-        setInputValue(event.target.value);
-    };
+        if (isEditing) {
+            onChangeName(symbol, playerName);
+        }
+    }
 
-    let playerName = <span className='player-name'>{inputValue}</span>;
+    function handleChange(event) {
+        setPlayerName(event.target.value);
+    }
+
+    let editablePlayerName = <span className='player-name'>{playerName}</span>;
+    // let btnCaption = 'Edit';
 
     if (isEditing) {
-        playerName = (
+        editablePlayerName = (
             <input
-                value={inputValue}
                 type='text'
                 required
-                onChange={handleInputChange}
+                value={playerName}
+                onChange={handleChange}
             />
         );
+        // btnCaption = 'Save';
     }
 
     return (
-        <>
-            <li>
-                <span className='player'>
-                    {playerName}
-                    <span className='player-symbol'>{symbol}</span>
-                </span>
-                <button onClick={handleEnditing}>
-                    {!isEditing ? 'Edit' : 'Save'}
-                </button>
-            </li>
-        </>
+        <li className={isActive ? 'active' : undefined}>
+            <span className='player'>
+                {editablePlayerName}
+                <span className='player-symbol'>{symbol}</span>
+            </span>
+            <button onClick={handleEditClick}>
+                {isEditing ? 'Save' : 'Edit'}
+            </button>
+        </li>
     );
 }
